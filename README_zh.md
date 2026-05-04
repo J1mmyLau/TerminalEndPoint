@@ -34,7 +34,7 @@ TerminalEndPoint/
 ├── internal/
 │   ├── config/               # 环境变量配置
 │   ├── pty/                  # PTY 封装（creack/pty）
-│   ├── session/              # 会话生命周期、环形缓冲区、事件总线
+│   ├── session/              # 会话生命周期、环形缓冲区、事件总线、终端应答器
 │   ├── server/               # HTTP 服务器、路由、CORS 中间件
 │   ├── handler/              # REST + WebSocket 处理器
 │   └── mcp/                  # MCP JSON-RPC 服务 + 9 个工具定义
@@ -57,6 +57,7 @@ TerminalEndPoint/
 - **PTY 会话**：完整的伪终端支持（resize、信号、原始输出）
 - **环形缓冲区**：有界输出历史，支持断线重连时按序号回放
 - **会话管理**：TTL 自动回收，并发会话池
+- **TUI 工具支持**：内置终端查询应答器（VT100/xterm），支持 vim、htop、codex TUI、REPL 等
 - **交互式 REPL**：完整的 bash/python/node REPL 支持（write/read 循环）
 - **9 个 MCP 工具**：exec、spawn、write、read、signal、resize、kill、list、info
 - **并发安全**：Go race detector 验证零竞态

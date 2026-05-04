@@ -2,6 +2,8 @@
 
 TerminalEndPoint exposes two interfaces: a REST + WebSocket HTTP API, and an MCP (Model Context Protocol) JSON-RPC interface over stdio.
 
+> **TUI Support**: TerminalEndPoint includes a built-in terminal query responder that auto-answers VT100/xterm device queries (cursor position, device attributes, color queries). This enables full interaction with TUI applications like vim, htop, codex, and REPLs without the terminal hanging.
+
 ## HTTP REST API
 
 Base URL: `http://host:port`

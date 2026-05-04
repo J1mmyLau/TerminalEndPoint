@@ -73,7 +73,29 @@ websocat ws://localhost:8080/ws/sessions/abc123
 
 实时发送命令并接收输出。
 
-## 6. MCP 模式（供 AI Agent 使用）
+## 6. TUI 工具（vim、htop、Python REPL）
+
+TerminalEndPoint 内置终端查询应答器，支持完整的 TUI 交互：
+
+```bash
+# 创建会话并通过 WebSocket 连接
+SESSION=$(curl -s -X POST http://localhost:8080/api/v1/sessions \
+  -H "Content-Type: application/json" \
+  -d '{"label":"repl","cols":120,"rows":30}' | jq -r '.id')
+
+# 连接后尝试 Python REPL：
+#   python3<enter>
+#   print(1+2)<enter>
+#   exit()<enter>
+
+# 或启动 vim：
+#   vim /tmp/test.txt<enter>
+#   i（进入插入模式）→ 输入文字 → Esc → :wq<enter>
+```
+
+所有标准 VT100/xterm TUI 应用均可正常工作：vim、htop、codex、tmux、python/node REPL。
+
+## 7. MCP 模式（供 AI Agent 使用）
 
 ```bash
 echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | ./terminal-endpoint mcp
@@ -91,7 +113,7 @@ echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | ./terminal-e
 }
 ```
 
-## 7. Docker
+## 8. Docker
 
 ```bash
 docker compose up -d

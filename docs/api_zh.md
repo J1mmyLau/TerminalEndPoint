@@ -2,6 +2,8 @@
 
 TerminalEndPoint 提供两种接口：REST + WebSocket HTTP API，以及 MCP（Model Context Protocol）JSON-RPC over stdio 接口。
 
+> **TUI 支持**：TerminalEndPoint 内置终端查询应答器，自动回复 VT100/xterm 设备查询（光标位置、设备属性、颜色查询）。这使得 vim、htop、codex、REPL 等 TUI 应用不会因等待终端响应而卡住。
+
 ## HTTP REST API
 
 Base URL: `http://host:port`

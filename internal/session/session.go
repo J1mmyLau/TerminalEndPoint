@@ -121,9 +121,11 @@ func (s *Session) readLoop(ctx context.Context, flushInterval time.Duration, max
 	go func() {
 		defer close(readCh)
 		buf := make([]byte, 4096)
+		responder := newTerminalResponder(s.terminal.Write)
 		for {
 			n, err := s.terminal.Read(buf)
 			if n > 0 {
+				responder.feed(buf[:n])
 				data := make([]byte, n)
 				copy(data, buf[:n])
 				readCh <- readResult{data: data}

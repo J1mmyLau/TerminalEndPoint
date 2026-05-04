@@ -17,6 +17,27 @@ Agent ── WebSocket (stream)  ──┘       │
 
 Each session is an isolated pseudo-terminal (PTY) with its own shell process. Sessions can be interactive (long-lived bash) or ephemeral (single command execution).
 
+### TUI Tool Support
+
+TerminalEndPoint includes a built-in **terminal query responder** that automatically answers VT100/xterm device queries from TUI applications. This enables full interaction with programs that use raw terminal mode and ANSI escape sequences:
+
+| Query | Response | Used by |
+|-------|----------|---------|
+| `\x1b[6n` (cursor position) | `\x1b[1;1R` | vim, codex, htop, python REPL |
+| `\x1b[c` (device attributes) | `\x1b[?1;2c` | codex, tmux, screen |
+| `\x1b[>c` (secondary DA) | `\x1b[>0;0;0c` | modern TUI frameworks |
+| `\x1b]10;?\x1b\\` (fg color) | `\x1b]10;rgb:0000/0000/0000\x1b\\` | codex, helix |
+| `\x1b]11;?\x1b\\` (bg color) | `\x1b]11;rgb:ffff/ffff/ffff\x1b\\` | codex, helix |
+
+**Supported TUI tools** (verified):
+- Python/Node REPLs with colors
+- vim/neovim (edit + save)
+- htop (process viewer)
+- codex interactive mode (TUI + streaming response)
+- Any tool using standard VT100/xterm escape sequences
+
+**Important for agent consumption**: For tools that offer a non-interactive mode (like `codex exec`), prefer that over TUI mode. Non-interactive mode is deterministic, faster, and returns clean output without ANSI escape sequences. Use TUI mode only when you need interactive debugging (step-through, breakpoints, REPL).
+
 ---
 
 ## MCP Tools Reference
@@ -307,6 +328,34 @@ int main() { return 0; }
 ''')
 "
 ```
+
+### Pattern 6: TUI Application (vim, htop, codex interactive)
+
+TerminalEndPoint includes a terminal query responder (auto-answers DSR, DA, color queries). TUI applications work without hanging:
+
+```
+1. terminal_spawn:  create session → cols=120, rows=40
+2. WS connect:      ws://host/ws/sessions/{id}
+3. terminal_write:  launch TUI app       → vim file.txt\n
+4. terminal_write:  enter insert mode    → i
+5. terminal_write:  type content         → Hello World
+6. terminal_write:  exit insert mode     → \x1b (escape)
+7. terminal_write:  save and quit        → :wq\n
+8. terminal_read:   verify file saved    → check exit or output
+```
+
+**For codex interactive mode:**
+```
+1. terminal_spawn:  create session
+2. terminal_write:  codex\n                    (launch codex)
+3. WS stream:       watch for TUI to render
+4. terminal_write:  2                          (skip update if prompted)
+5. terminal_write:  your prompt here\n         (send prompt)
+6. WS stream:       watch for codex response   (may take 10-30s)
+7. terminal_write:  /quit\n                    (exit codex)
+```
+
+**Tip**: For non-interactive codex usage, prefer `terminal_exec` with `codex exec "prompt"`. It's deterministic and returns clean output.
 
 ---
 

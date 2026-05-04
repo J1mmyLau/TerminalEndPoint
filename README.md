@@ -34,7 +34,7 @@ TerminalEndPoint/
 ├── internal/
 │   ├── config/               # Environment-based configuration
 │   ├── pty/                  # PTY wrapper (creack/pty)
-│   ├── session/              # Session lifecycle, ring buffer, event bus
+│   ├── session/              # Session lifecycle, ring buffer, event bus, terminal responder
 │   ├── server/               # HTTP server, router, CORS middleware
 │   ├── handler/              # REST + WebSocket handlers
 │   └── mcp/                  # MCP JSON-RPC server + 9 tool definitions
@@ -55,6 +55,7 @@ TerminalEndPoint/
 - **PTY-backed sessions**: Full pseudo-terminal support (resize, signals, raw output)
 - **Ring buffer**: Bounded output history with sequence-based replay on reconnect
 - **Session management**: TTL-based auto-cleanup, concurrent session pool
+- **TUI tool support**: Built-in terminal query responder (VT100/xterm) for vim, htop, codex TUI, REPLs
 - **Interactive REPL**: Full bash/python/node REPL support with write/read cycle
 - **9 MCP tools**: exec, spawn, write, read, signal, resize, kill, list, info
 - **Race-free**: All concurrency primitives verified with Go race detector

@@ -73,7 +73,29 @@ websocat ws://localhost:8080/ws/sessions/abc123
 
 Send commands and receive output in real-time.
 
-## 6. MCP Mode (for AI Agents)
+## 6. TUI Tools (vim, htop, Python REPL)
+
+TerminalEndPoint has a built-in terminal query responder that enables full TUI interaction:
+
+```bash
+# Spawn a session and connect via WebSocket
+SESSION=$(curl -s -X POST http://localhost:8080/api/v1/sessions \
+  -H "Content-Type: application/json" \
+  -d '{"label":"repl","cols":120,"rows":30}' | jq -r '.id')
+
+# Connect and try Python REPL:
+#   python3<enter>
+#   print(1+2)<enter>
+#   exit()<enter>
+
+# Or launch vim:
+#   vim /tmp/test.txt<enter>
+#   i (insert mode) → type text → Esc → :wq<enter>
+```
+
+All standard VT100/xterm TUI applications work: vim, htop, codex, tmux, python/node REPLs.
+
+## 7. MCP Mode (for AI Agents)
 
 ```bash
 echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | ./terminal-endpoint mcp
@@ -91,7 +113,7 @@ Configure your MCP client (Claude Desktop, Codex, etc.):
 }
 ```
 
-## 7. Docker
+## 8. Docker
 
 ```bash
 docker compose up -d
