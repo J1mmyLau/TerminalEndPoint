@@ -1,0 +1,19 @@
+services:
+  terminal-endpoint:
+    build: .
+    container_name: terminal-endpoint
+    ports:
+      - "8080:8080"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8080
+      - MAX_SESSIONS=50
+      - SESSION_TTL=5m
+      - MAX_EXEC_TIMEOUT=120s
+      - MAX_OUTPUT_LINES=1000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
